@@ -54,6 +54,7 @@ class AdAccount(Base):
     access_token = Column(Text, nullable=True)
     refresh_token = Column(Text, nullable=True)
     token_expires_at = Column(DateTime, nullable=True)
+    extra_data = Column(Text, nullable=True)
     connected_at = Column(DateTime, default=datetime.utcnow)
 
     business = relationship("Business", back_populates="ad_accounts")
@@ -110,6 +111,8 @@ class Post(Base):
     caption = Column(Text, nullable=False)
     media_url = Column(Text, nullable=True)
     status = Column(String(50), default="published") # 'draft', 'scheduled', 'published', 'failed'
+    meta_post_id = Column(String(255), nullable=True)
+    error_message = Column(Text, nullable=True)
     scheduled_at = Column(DateTime, nullable=True)
     published_at = Column(DateTime, default=datetime.utcnow)
     created_at = Column(DateTime, default=datetime.utcnow)

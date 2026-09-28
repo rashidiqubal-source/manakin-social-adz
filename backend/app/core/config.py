@@ -1,15 +1,19 @@
 import os
-from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Load backend/.env file
+load_dotenv()
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Social Adz API"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
-    SECRET_KEY: str = "SUPER_SECRET_SOCIALADZ_KEY_2026_CHANGE_IN_PROD"
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "SUPER_SECRET_SOCIALADZ_KEY_2026_CHANGE_IN_PROD")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 # 7 days
     
     # SQLite async for local dev
-    DATABASE_URL: str = "sqlite+aiosqlite:///./socialadz.db"
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./socialadz.db")
 
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = [
@@ -19,19 +23,18 @@ class Settings(BaseSettings):
     ]
 
     # OAuth Application Credentials
-    META_APP_ID: str = os.getenv("META_APP_ID", "mock_meta_app_id")
-    META_APP_SECRET: str = os.getenv("META_APP_SECRET", "mock_meta_app_secret")
+    META_APP_ID: str = os.getenv("META_APP_ID", "")
+    META_APP_SECRET: str = os.getenv("META_APP_SECRET", "")
 
-    GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID", "mock_google_client_id")
-    GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET", "mock_google_client_secret")
+    GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID", "")
+    GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET", "")
 
-    SNAP_CLIENT_ID: str = os.getenv("SNAP_CLIENT_ID", "mock_snap_client_id")
-    SNAP_CLIENT_SECRET: str = os.getenv("SNAP_CLIENT_SECRET", "mock_snap_client_secret")
+    SNAP_CLIENT_ID: str = os.getenv("SNAP_CLIENT_ID", "")
+    SNAP_CLIENT_SECRET: str = os.getenv("SNAP_CLIENT_SECRET", "")
 
-    TWITTER_CLIENT_ID: str = os.getenv("TWITTER_CLIENT_ID", "mock_twitter_client_id")
-    TWITTER_CLIENT_SECRET: str = os.getenv("TWITTER_CLIENT_SECRET", "mock_twitter_client_secret")
+    TWITTER_CLIENT_ID: str = os.getenv("TWITTER_CLIENT_ID", "")
+    TWITTER_CLIENT_SECRET: str = os.getenv("TWITTER_CLIENT_SECRET", "")
 
-    class Config:
-        case_sensitive = True
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
 settings = Settings()

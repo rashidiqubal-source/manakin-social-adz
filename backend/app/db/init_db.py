@@ -7,10 +7,14 @@ from app.models.models import User, Business, AdAccount, Campaign, Lead, Post, T
 
 async def init_db():
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
     async with AsyncSessionLocal() as db:
+        # Check if already seeded
+        user_check = await db.execute(select(User).limit(1))
+        if user_check.scalars().first():
+            return
+
         # Create Demo User
         user = User(
             id="demo-user-id",
@@ -40,16 +44,8 @@ async def init_db():
         db.add(biz)
         await db.commit()
 
-        # Create Connected Ad Accounts
+        # Create Connected Ad Accounts (Meta starts DISCONNECTED so user can connect their real page)
         ad_accs = [
-            AdAccount(
-                business_id=biz.id,
-                platform="meta",
-                account_id="act_meta_8894120",
-                account_name="Manakin Meta Business Manager (FB & IG)",
-                status="connected",
-                access_token="mock_access_token_meta"
-            ),
             AdAccount(
                 business_id=biz.id,
                 platform="google",

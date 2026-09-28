@@ -143,6 +143,7 @@ class PostCreate(BaseModel):
     caption: str
     media_url: Optional[str] = None
     status: str = "published" # draft, scheduled, published
+    publish_to_meta: Optional[bool] = True
 
 class PostResponse(BaseModel):
     id: str
@@ -150,6 +151,8 @@ class PostResponse(BaseModel):
     caption: str
     media_url: Optional[str] = None
     status: str
+    meta_post_id: Optional[str] = None
+    error_message: Optional[str] = None
     published_at: Optional[datetime] = None
     created_at: datetime
 
@@ -178,3 +181,33 @@ class TransactionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# Meta / Facebook OAuth & Page Connection
+class MetaOAuthCallbackRequest(BaseModel):
+    code: str
+    redirect_uri: str
+
+class MetaManualConnectRequest(BaseModel):
+    page_id: str
+    page_name: Optional[str] = "Facebook Business Page"
+    access_token: str
+
+class MetaStatusResponse(BaseModel):
+    is_connected: bool
+    status: str # 'connected', 'disconnected', 'not_connected'
+    page_id: Optional[str] = None
+    page_name: Optional[str] = None
+    connected_at: Optional[datetime] = None
+    app_id_configured: bool
+    meta_app_id: Optional[str] = None
+
+class MetaAuthUrlResponse(BaseModel):
+    auth_url: str
+    app_id_configured: bool
+    app_id: Optional[str] = None
+    redirect_uri: str
+
+class MetaTestPostRequest(BaseModel):
+    message: Optional[str] = "🚀 Verified connection to Meta Page! Automated post from Manakin Social Adz."
+    media_url: Optional[str] = None
+

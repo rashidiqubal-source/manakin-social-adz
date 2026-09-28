@@ -30,8 +30,6 @@ async def get_dashboard_stats(db: AsyncSession = Depends(get_db)):
     # Connected ad account platforms
     acc_result = await db.execute(select(AdAccount.platform).where(AdAccount.status == 'connected'))
     connected_platforms = list(set([row[0] for row in acc_result.all()]))
-    if not connected_platforms:
-        connected_platforms = ["meta", "google"]
 
     return DashboardStatsResponse(
         active_campaigns_count=active_count or 4,
